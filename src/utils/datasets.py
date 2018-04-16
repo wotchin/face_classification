@@ -16,7 +16,7 @@ class DataManager(object):
         if self.dataset_path != None:
             self.dataset_path = dataset_path
         elif self.dataset_name == 'imdb':
-            self.dataset_path = '../datasets/imdb_crop/imdb.mat'
+            self.dataset_path = '../../dataset/imdb_crop/imdb.mat'
         elif self.dataset_name == 'fer2013':
             self.dataset_path = '../datasets/fer2013/fer2013.csv'
         elif self.dataset_name == 'KDEF':
@@ -49,8 +49,11 @@ class DataManager(object):
         gender_classes = gender_classes[mask].tolist()
         image_names = []
         for image_name_arg in range(image_names_array.shape[0]):
+        #pic_num = 10000
+        #for image_name_arg in range(0,pic_num):
             image_name = image_names_array[image_name_arg][0]
             image_names.append(image_name)
+        #return dict(zip(image_names, gender_classes[:pic_num]))
         return dict(zip(image_names, gender_classes))
 
     def _load_fer2013(self):

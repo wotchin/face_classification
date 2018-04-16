@@ -185,7 +185,6 @@ class ImageGenerator(object):
                     image_path = self.path_prefix + key
                     image_array = imread(image_path)
                     image_array = imresize(image_array, self.image_size)
-
                     num_image_channels = len(image_array.shape)
                     if num_image_channels != 3:
                         continue
@@ -228,5 +227,5 @@ class ImageGenerator(object):
                         targets = []
 
     def _wrap_in_dictionary(self, image_array, targets):
-        return [{'input_1':image_array},
+        return [{'image_array_input':image_array},
                 {'predictions':targets}]

@@ -21,7 +21,7 @@ from utils.inference import load_image
 # parameters
 image_path = sys.argv[1]
 # task = sys.argv[2]
-task = 'emotion'
+task = 'gender'
 if task == 'emotion':
     labels = get_labels('fer2013')
     offsets = (0, 0)
@@ -68,7 +68,7 @@ for face_coordinates in faces:
     # prediction
     predicted_class = np.argmax(model.predict(gray_face))
     label_text = labels[predicted_class]
-
+    print(label_text)
     gradient_function = compile_gradient_function(model,
                             predicted_class, 'conv2d_7')
     register_gradient()
