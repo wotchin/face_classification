@@ -54,13 +54,13 @@ model.compile(optimizer='adam',
 model.summary()
 
 # model callbacks
-early_stop = EarlyStopping('val_loss', patience=patience)
-reduce_lr = ReduceLROnPlateau('val_loss', factor=0.1,
+early_stop = EarlyStopping('loss',0.1, patience=patience)
+reduce_lr = ReduceLROnPlateau('loss', factor=0.1,
                               patience=int(patience/2), verbose=1)
 csv_logger = CSVLogger(log_file_path, append=False)
-model_names = trained_models_path + '.{epoch:02d}.hdf5'
+model_names = trained_models_path + '.{epoch:02d}-{acc:2f}.hdf5'
 model_checkpoint = ModelCheckpoint(model_names,
-                                   monitor='val_loss',
+                                   monitor='loss',
                                    verbose=1,
                                    save_best_only=True,
                                    save_weights_only=False)
