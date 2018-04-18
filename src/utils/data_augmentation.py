@@ -211,8 +211,11 @@ class ImageGenerator(object):
                                         cv2.COLOR_RGB2GRAY).astype('float32')
                         image_array = np.expand_dims(image_array, -1)
 
-                    inputs.append(image_array)
-                    targets.append(ground_truth)
+                    if ground_truth is not np.NaN:
+                        inputs.append(image_array)
+                        targets.append(ground_truth)
+                    else:
+                        continue
                     if len(targets) == self.batch_size:
                         inputs = np.asarray(inputs)
                         targets = np.asarray(targets)
@@ -227,5 +230,5 @@ class ImageGenerator(object):
                         targets = []
 
     def _wrap_in_dictionary(self, image_array, targets):
-        return [{'image_array_input':image_array},
+        return [{'conv2d_1_input':image_array},
                 {'predictions':targets}]

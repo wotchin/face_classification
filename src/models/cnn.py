@@ -1,4 +1,4 @@
-from keras.layers import Activation, Convolution2D, Dropout, Conv2D
+from keras.layers import Activation, Convolution2D, Dropout, Conv2D,Dense
 from keras.layers import AveragePooling2D, BatchNormalization
 from keras.layers import GlobalAveragePooling2D
 from keras.models import Sequential
@@ -51,6 +51,121 @@ def simple_CNN(input_shape, num_classes):
     model.add(Convolution2D(filters=num_classes, kernel_size=(3, 3), padding='same'))
     model.add(GlobalAveragePooling2D())
     model.add(Activation('softmax',name='predictions'))
+    return model
+
+def alexNet(input_shape,num_classes):
+    model = Sequential()
+    ## Architecture
+    model.add(Conv2D( filters = 96, kernel_size = (11,11), strides = 4, padding = 'same', activation = 'relu', input_shape = input_shape, kernel_initializer = 'he_normal'))
+    model.add(MaxPooling2D( pool_size = (3,3), strides = (2,2), padding= 'same', data_format = None)) # overlapping pooling
+
+    model.add(Conv2D( filters = 256, kernel_size = (5,5), strides = 1, padding = 'same', activation = 'relu', kernel_initializer = 'he_normal'))
+    model.add(MaxPooling2D( pool_size = (3,3), strides = (2,2), padding= 'same', data_format = None)) 
+
+    model.add(Conv2D( filters = 384, kernel_size = (3,3), strides = 1, padding = 'same', activation = 'relu', kernel_initializer = 'he_normal'))
+    model.add(Conv2D( filters = 384, kernel_size = (3,3), strides = 1, padding = 'same', activation = 'relu', kernel_initializer = 'he_normal'))
+    model.add(Conv2D( filters = 256, kernel_size = (3,3), strides = 1, padding = 'same', activation = 'relu', kernel_initializer = 'he_normal'))
+    model.add(MaxPooling2D( pool_size = (3,3), strides = (2,2), padding= 'same', data_format = None))
+
+    model.add(Flatten())
+    model.add(Dense( units = 4096, activation = 'relu'))
+    model.add(Dense( units = 4096, activation = 'relu'))
+    #model.add(Dense( units = num_classes, activation = 'softmax'))
+    model.add(Dense(num_classes))
+    model.add(Activation("softmax",name="output"))
+    return model
+
+def faceNet(input_shape,num_classes):
+    #coded by wotchin
+    #from VIPLFaceNet
+    model = Sequential()
+    # Conv layer 1 output shape (55, 55, 48)
+    model.add(Conv2D(
+        kernel_size=(9, 9), 
+        activation="relu",
+        filters=48, 
+        strides=(4, 4), 
+        input_shape=input_shape
+    ))
+    #pool1
+    model.add(MaxPooling2D((3, 3), strides=(2, 2), padding='same'))
+
+    # Conv layer 2 output shape (27, 27, 128)
+    model.add(Conv2D(
+        strides=(1, 1), 
+        kernel_size=(3,3), 
+        activation="relu", 
+        filters=128
+    ))
+
+    # Conv layer 3 output shape (13, 13, 192)
+    model.add(Conv2D(
+        strides=(1, 1), 
+        kernel_size=(3,3), 
+        activation="relu", 
+        filters=128
+    ))
+
+    #pool2
+    model.add(MaxPooling2D((3, 3), strides=(2, 2), padding='same'))
+
+    #conv4
+    model.add(Conv2D(
+        kernel_size=(3, 3),
+        activation="relu", 
+        filters=256,
+        padding="same",
+        strides=(1,1)
+    ))
+
+    #conv5
+    model.add(Conv2D(
+        kernel_size=(3, 3),
+        activation="relu", 
+        filters=192,
+        padding="same",
+        strides=(1,1)
+    ))
+
+    #conv6
+    model.add(Conv2D(
+        kernel_size=(3, 3),
+        activation="relu", 
+        filters=192,
+        padding="same",
+        strides=(1,1)
+    ))
+
+    #conv7
+    model.add(Conv2D(
+        kernel_size=(3, 3),
+        activation="relu", 
+        filters=128,
+        padding="same",
+        strides=(1,1)
+    ))
+
+    #pool3
+    model.add(MaxPooling2D((3, 3), strides=(2, 2), padding='same'))
+
+    # fully connected layer 1
+
+    model.add(Flatten())
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.5))
+
+    # fully connected layer 2
+    model.add(Dense(2048, activation='relu'))
+    model.add(Dropout(0.5))
+
+
+    # output
+    #model.add(Dense(num_classes, activation='softmax'))
+    #model.add(Dense(num_classes, activation='relu'))
+    #model.add(Activation('softmax',name='predictions'))
+    model.add(Dense(num_classes))
+    model.add(Activation('softmax',name='predictions'))
+    #return 
     return model
 
 def simpler_CNN(input_shape, num_classes):
