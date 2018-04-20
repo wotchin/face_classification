@@ -11,7 +11,8 @@ Revised by wotchin
 from keras.callbacks import CSVLogger, ModelCheckpoint, EarlyStopping
 from keras.callbacks import ReduceLROnPlateau
 from utils.datasets import DataManager
-from models.cnn import faceNet as mymodel
+#from models.cnn import faceNet as mymodel
+from SmooNet import faceNet_v2 as mymodel
 from utils.data_augmentation import ImageGenerator
 from utils.datasets import split_imdb_data
 from keras.models import load_model
@@ -25,14 +26,14 @@ do_random_crop = False
 patience = 100
 num_classes = 2
 dataset_name = 'imdb'
-input_shape = (224,224,1)
+input_shape = (64,64,1)
 if input_shape[2] == 1:
     grayscale = True
 else:
     grayscale = False
 images_path = '../../dataset/imdb_crop/'
 log_file_path = '../trained_models/gender_models/gender_training.log'
-trained_models_path = '../trained_models/gender_models/alex_v2'
+trained_models_path = '../trained_models/gender_models/smoo'
 
 # data loader
 data_loader = DataManager(dataset_name)
@@ -50,10 +51,10 @@ image_generator = ImageGenerator(ground_truth_data, batch_size,
 
 # model parameters/compilation
 model = mymodel(input_shape, num_classes)
-model = load_model("../trained_models/gender_models/alex_v2.01-0.808263.hdf5")
+#model = load_model("../trained_models/gender_models/alex_v2.01-0.808263.hdf5")
 #model = simple_CNN(input_shape,num_classes)
-model.compile(optimizer='sgd',
-              loss='categorical_crossentropy',
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
               metrics=['accuracy'])
 model.summary()
 
@@ -74,6 +75,6 @@ callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr]
 model.fit_generator(image_generator.flow(mode='train'),
                     steps_per_epoch=int(len(train_keys) / batch_size),
                     epochs=num_epochs, verbose=1,
-                    callbacks=callbacks,
-                    validation_data=image_generator.flow('val'),
-                    validation_steps=int(len(val_keys) / batch_size))
+                    callbacks=callbacks)
+                    #validation_data=image_generator.flow('val'),
+                    #validation_steps=int(len(val_keys) / batch_size))
