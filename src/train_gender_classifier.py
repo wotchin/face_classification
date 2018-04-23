@@ -53,7 +53,7 @@ image_generator = ImageGenerator(ground_truth_data, batch_size,
 model = mymodel(input_shape, num_classes)
 #model = load_model("../trained_models/gender_models/alex_v2.01-0.808263.hdf5")
 #model = simple_CNN(input_shape,num_classes)
-model.compile(optimizer='adam',
+model.compile(optimizer='sgd',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 model.summary()
@@ -75,6 +75,6 @@ callbacks = [model_checkpoint, csv_logger, early_stop, reduce_lr]
 model.fit_generator(image_generator.flow(mode='train'),
                     steps_per_epoch=int(len(train_keys) / batch_size),
                     epochs=num_epochs, verbose=1,
-                    callbacks=callbacks)
-                    #validation_data=image_generator.flow('val'),
-                    #validation_steps=int(len(val_keys) / batch_size))
+                    callbacks=callbacks,
+                    validation_data=image_generator.flow('val'),
+                    validation_steps=int(len(val_keys) / batch_size))
